@@ -1006,6 +1006,27 @@ public class VncCanvasActivity extends Activity {
 	}
 
 	@Override
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
+	public boolean onGenericMotionEvent(MotionEvent event) {
+		if(event.getAction() == MotionEvent.ACTION_HOVER_MOVE) {
+			//Track the bluetooth mouse cursor
+			return bluetoothMouse(event);
+		} else if(event.getAction() == MotionEvent.ACTION_SCROLL) {
+			//Handle scroll wheel
+			return vncCanvas.processMouseScrollEvent(event);
+		}
+		return super.onGenericMotionEvent(event);
+	}
+	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
+	boolean bluetoothMouse(MotionEvent evt) {
+		if(vncCanvas.processPointerEvent(evt, trackballButtonDown)) {
+			return true;
+		}
+		return VncCanvasActivity.super.onGenericMotionEvent(evt);
+	}
+
+	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		return inputHandler.onTouchEvent(event);
 	}

@@ -770,6 +770,8 @@ public class VncCanvas extends ImageView {
 	static final int MOUSE_BUTTON_RIGHT = 4;
 	static final int MOUSE_BUTTON_SCROLL_UP = 8;
 	static final int MOUSE_BUTTON_SCROLL_DOWN = 16;
+	static final int MOUSE_BUTTON_SCROLL_LEFT = 32;
+	static final int MOUSE_BUTTON_SCROLL_RIGHT = 64;
 	
 	/**
 	 * Current state of "mouse" buttons
@@ -867,6 +869,37 @@ public class VncCanvas extends ImageView {
 				
 			}
 		}		
+	}
+	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
+	public boolean processMouseScrollEvent(MotionEvent evt) {
+		byte mask = 0;
+		float vScroll = evt.getAxisValue(MotionEvent.AXIS_VSCROLL);
+		float hScroll = evt.getAxisValue(MotionEvent.AXIS_HSCROLL);
+		if(vScroll > 0.0f) {
+			mask |= ((byte) MOUSE_BUTTON_SCROLL_UP);
+		} else if(vScroll < 0.0f) {
+			mask |= ((byte) MOUSE_BUTTON_SCROLL_DOWN);
+		}
+		/*
+		 * Horizontal scrolling appears to be unsupported in the vnc
+		 * server I'm using. I'll leave this here in case it works
+		 * for someone else.
+		 */
+		if(hScroll > 0.0f) {
+			mask |= ((byte) MOUSE_BUTTON_SCROLL_RIGHT);
+		} else if(hScroll < 0.0f) {
+			mask |= ((byte) MOUSE_BUTTON_SCROLL_LEFT);
+		}
+		
+		try {
+			rfb.writePointerEvent(mouseX, mouseY, 0, mask);
+			rfb.writePointerEvent(mouseX, mouseY, 0, 0);
+		} catch(IOException e) {
+			//TODO Do something?
+			
+		}
+		return true;
 	}
 
 	public boolean processLocalKeyEvent(int keyCode, KeyEvent evt) {
