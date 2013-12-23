@@ -991,7 +991,8 @@ public class VncCanvasActivity extends Activity {
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
-		if(hasFocus) {
+		boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+		if(isKitKat && hasFocus) {
 			View view = getWindow().getDecorView();
 			view.setSystemUiVisibility(
 					View.SYSTEM_UI_FLAG_LAYOUT_STABLE
