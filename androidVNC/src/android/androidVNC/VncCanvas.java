@@ -37,8 +37,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.Paint.Style;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -913,6 +913,7 @@ public class VncCanvas extends ImageView {
 		      case KeyEvent.KEYCODE_DEL: 		  key = 0xff08; break;
 		      case KeyEvent.KEYCODE_ENTER:        key = 0xff0d; break;
 		      case KeyEvent.KEYCODE_DPAD_CENTER:  key = 0xff0d; break;
+		      case KeyEvent.KEYCODE_TAB:          key = 0xff09; break;
 		      default: 							  
 		    	  key = evt.getUnicodeChar();
 		    	  metaState = 0;
