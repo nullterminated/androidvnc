@@ -32,6 +32,7 @@ package android.androidVNC;
 import java.io.IOException;
 import java.util.zip.Inflater;
 
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -39,6 +40,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -786,9 +788,14 @@ public class VncCanvas extends ImageView {
 	 * @param downEvent True if "mouse button" (touch or trackball button) is down when this happens
 	 * @return true if event was actually sent
 	 */
+	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	public boolean processPointerEvent(MotionEvent evt,boolean downEvent)
 	{
-		return processPointerEvent(evt,downEvent,cameraButtonDown);
+		boolean rightMouse = false;
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			rightMouse = (evt.getButtonState() == MotionEvent.BUTTON_SECONDARY);
+		}
+		return processPointerEvent(evt,downEvent,cameraButtonDown || rightMouse);
 	}
 	
 	/**
