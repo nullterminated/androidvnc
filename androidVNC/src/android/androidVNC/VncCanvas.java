@@ -954,9 +954,20 @@ public class VncCanvas extends ImageView {
 		      case KeyEvent.KEYCODE_ENTER:        key = 0xff0d; break;
 		      case KeyEvent.KEYCODE_DPAD_CENTER:  key = 0xff0d; break;
 		      case KeyEvent.KEYCODE_TAB:          key = 0xff09; break;
+		      case KeyEvent.KEYCODE_CTRL_LEFT:
+		      case KeyEvent.KEYCODE_CTRL_RIGHT:
+		      case KeyEvent.KEYCODE_ALT_LEFT:
+		      case KeyEvent.KEYCODE_ALT_RIGHT:
+		      case KeyEvent.KEYCODE_META_LEFT:
+		      case KeyEvent.KEYCODE_META_RIGHT:   key = 0; break;
 		      default: 							  
-		    	  key = evt.getUnicodeChar();
-		    	  metaState = 0;
+		    	  if(useMetaKeys(evt)) {
+			    	  key = evt.getUnicodeChar(0);
+			    	  metaState = metaStateMask(evt);
+		    	  } else {
+		    		  metaState = 0;
+		    		  key = evt.getUnicodeChar();
+		    	  }
 		    	  break;
 		    }
 	    	try {
@@ -976,6 +987,33 @@ public class VncCanvas extends ImageView {
 			return true;
 		}
 		return false;
+	}
+	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	public boolean useMetaKeys(KeyEvent evt) {
+		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB
+				&& (evt.isCtrlPressed() || evt.isAltPressed() || evt.isMetaPressed());
+	}
+	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	public int metaStateMask(KeyEvent evt) {
+		int metaState = 0;
+		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+			return metaState;
+		}
+		if(evt.isCtrlPressed()) {
+			metaState |= VncCanvas.CTRL_MASK;
+		}
+		if(evt.isAltPressed()) {
+			metaState |= VncCanvas.ALT_MASK;
+		}
+		if(evt.isMetaPressed()) {
+			metaState |= VncCanvas.META_MASK;
+		}
+		if(evt.isShiftPressed()) {
+			metaState |= VncCanvas.SHIFT_MASK;
+		}
+		return metaState;
 	}
 
 	public void closeConnection() {
