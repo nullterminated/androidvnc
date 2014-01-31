@@ -941,11 +941,11 @@ public class VncCanvasActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		if (isFinishing()) {
+//		if (isFinishing()) {
 			vncCanvas.closeConnection();
 			vncCanvas.onDestroy();
 			database.close();
-		}
+//		}
 	}
 
 	@Override
